@@ -21,3 +21,10 @@ class TestAccount:
         account = Account("John", "Doe", None)
         assert account.pesel == "Invalid"
 
+    def test_promo_code_too_long(self):
+        account = Account("John", "Doe", "12345678910", "PROM_RABAT")
+        assert account.balance == 0.0
+    
+    def test_promo_code_too_short(self):
+        account = Account("John", "Doe", "12345678910", "PROM_X")
+        assert account.balance == 0.0
