@@ -49,3 +49,18 @@ class TestAccount:
         account = Account("John", "Doe", "12345678910", "PROM_XYZ")
         assert account.balance == 50.0
     
+    def test_promo_too_old_19xx(self):
+        account = Account("John", "Doe", "12045678910", "PROM_XYZ")
+        assert account.balance == 00.0
+    
+    def test_promo_too_old_18xx(self):
+        account = Account("John", "Doe", "12845678910", "PROM_XYZ")
+        assert account.balance == 00.0
+    
+    def test_promo_too_old_1960(self):
+        account = Account("John", "Doe", "60045678910", "PROM_XYZ")
+        assert account.balance == 00.0
+    
+    def test_promo_applicable_1961(self):
+        account = Account("John", "Doe", "61045678910", "PROM_XYZ")
+        assert account.balance == 50.0
