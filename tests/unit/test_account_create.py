@@ -21,10 +21,31 @@ class TestAccount:
         account = Account("John", "Doe", None)
         assert account.pesel == "Invalid"
 
-    def test_promo_code_too_long(self):
+    def test_promo_code_suffix_too_long(self):
         account = Account("John", "Doe", "12345678910", "PROM_RABAT")
         assert account.balance == 0.0
     
-    def test_promo_code_too_short(self):
+    def test_promo_code_suffix_too_short(self):
         account = Account("John", "Doe", "12345678910", "PROM_X")
         assert account.balance == 0.0
+
+    def test_promo_code_prefix_too_long(self):
+        account = Account("John", "Doe", "12345678910", "PROMO_XYZ")
+        assert account.balance == 0.0
+    
+    def test_promo_code_prefix_too_short(self):
+        account = Account("John", "Doe", "12345678910", "PRO_XYZ")
+        assert account.balance == 0.0
+    
+    def test_promo_code_invalid_prefix(self):
+        account = Account("John", "Doe", "12345678910", "ROOM_XYZ")
+        assert account.balance == 0.0
+    
+    def test_promo_code_invalid_infix(self):
+        account = Account("John", "Doe", "12345678910", "PROM-XYZ")
+        assert account.balance == 0.0
+    
+    def test_promo_code_valid(self):
+        account = Account("John", "Doe", "12345678910", "PROM_XYZ")
+        assert account.balance == 50.0
+    
