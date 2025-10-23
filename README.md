@@ -6,7 +6,7 @@
 
 name: Dawid
 
-surname: Podhrebelney
+surname: Podhrebelny
 
 group: 2
 
