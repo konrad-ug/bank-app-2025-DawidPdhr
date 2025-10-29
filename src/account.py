@@ -9,3 +9,7 @@ class Account:
     def outgoing_transfer(self, amount):
         if isinstance(amount, float) and amount >= 0.0 and amount <= self.balance:
             self.balance -= amount
+    
+    def outgoing_express_transfer(self, fee, amount):
+        if isinstance(amount, float) and amount >= 0.0 and amount <= self.balance:
+            self.balance -= (amount + fee)

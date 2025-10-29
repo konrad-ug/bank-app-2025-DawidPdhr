@@ -6,6 +6,7 @@ class PersonalAccount(Account):
         self.last_name = last_name
         self.balance = 50.0 if self.is_promo_applicable(promo_code, pesel) else 0.0
         self.pesel = pesel if self.is_pesel_valid(pesel) else "Invalid"
+        self.express_fee = 1.0
     
     def is_pesel_valid(self, pesel):
         if isinstance(pesel, str) and len(pesel) == 11:
@@ -25,3 +26,6 @@ class PersonalAccount(Account):
                 return True
             return False
         return False
+    
+    def outgoing_express_transfer(self, amount):
+        return super().outgoing_express_transfer(self.express_fee, amount)
