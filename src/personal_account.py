@@ -30,3 +30,11 @@ class PersonalAccount(Account):
     
     def outgoing_express_transfer(self, amount):
         return super().outgoing_express_transfer(self.express_fee, amount)
+    
+    def submit_for_loan(self, amount):
+        if isinstance(amount, float) and amount > 0 and len(self.history) > 2:
+            if min(self.history[-3:]) > 0 or (len(self.history) > 4 and sum(self.history[-5:]) > amount):
+                self.balance += amount
+                return True
+            return False
+        return False
