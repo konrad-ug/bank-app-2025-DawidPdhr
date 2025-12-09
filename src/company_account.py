@@ -14,3 +14,9 @@ class CompanyAccount(Account):
     
     def outgoing_express_transfer(self, amount):
         return super().outgoing_express_transfer(self.express_fee, amount)
+    
+    def take_loan(self, amount):
+        if isinstance(amount, float) and amount > 0 and -1775.0 in self.history and self.balance >= 2 * amount:
+            self.balance += amount
+            return True
+        return False
