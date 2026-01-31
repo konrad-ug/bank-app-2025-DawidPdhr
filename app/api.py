@@ -48,7 +48,13 @@ def get_account_by_pesel(pesel):
     if not account:
         return jsonify({"error": "Account not found"}), 404
     return (
-        jsonify({"first_name": account.first_name, "last_name": account.last_name}),
+        jsonify(
+            {
+                "first_name": account.first_name,
+                "last_name": account.last_name,
+                "balance": account.balance,
+            }
+        ),
         200,
     )
 
@@ -74,3 +80,42 @@ def delete_account(pesel):
         return jsonify({"error": "Account not found"}), 404
     registry.delete_account(pesel)
     return jsonify({"message": "Account deleted"}), 200
+
+
+@app.route("/api/accounts/<pesel>/transfer", methods=["POST"])
+def transfer(pesel):
+    print("Transfer request recieved")
+    data = request.get_json()
+
+    if (
+        not data
+        or "amount" not in data
+        or "type" not in data
+        or not data["amount"]
+        or not data["type"]
+    ):
+        return (
+            jsonify({"message": "Request body must contain 'amount' and 'type'"}),
+            400,
+        )
+
+    account = registry.get_account_by_pesel(pesel)
+
+    if not account:
+        return jsonify({"message": "Account not found"}), 404
+
+    match data["type"]:
+        case "incoming":
+            if account.incoming_transfer(data["amount"]):
+                return jsonify({"message": "Zlecenie przyjęto do realizacji"}), 200
+            return jsonify({"message": "Transfer Failed"}), 422
+        case "outgoing":
+            if account.outgoing_transfer(data["amount"]):
+                return jsonify({"message": "Zlecenie przyjęto do realizacji"}), 200
+            return jsonify({"message": "Transfer Failed"}), 422
+        case "express":
+            if account.outgoing_express_transfer(data["amount"]):
+                return jsonify({"message": "Zlecenie przyjęto do realizacji"}), 200
+            return jsonify({"message": "Transfer Failed"}), 422
+        case _:
+            return jsonify({"message": "Bad transfer type"}), 400
