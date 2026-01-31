@@ -6,6 +6,8 @@ BANK_APP_MF_URL = "https://wl-test.mf.gov.pl"
 
 
 class CompanyAccount(Account):
+    history_email_prefix: str = "Company account history:"
+
     def __init__(self, company_name, nip):
         super().__init__()
         self.company_name = company_name
