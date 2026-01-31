@@ -18,10 +18,16 @@ class TestAPI:
             requests.delete(f'{self.url}/{account["pesel"]}')
 
     def test_create_account(self):
-        payload = {"first_name": "John", "last_name": "Doe", "pesel": "12345678910"}
+        payload = {"first_name": "Jane", "last_name": "Doe", "pesel": "10987654321"}
         response = requests.post(self.url, json=payload)
         assert response.status_code == 201
         assert response.json()["message"] == "Account created"
+
+    def test_create_account_with_same_pesel(self):
+        payload = {"first_name": "John", "last_name": "Doe", "pesel": "12345678910"}
+        response = requests.post(self.url, json=payload)
+        assert response.status_code == 409
+        assert response.json()["message"] == "Account with this pesel already exists"
 
     def test_get_all_accounts(self):
         response = requests.get(self.url)
