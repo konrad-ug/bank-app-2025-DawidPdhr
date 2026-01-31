@@ -22,8 +22,7 @@ class TestAccountRegistry:
     def test_get_account_by_pesel(self, registry):
         account1 = PersonalAccount("John", "Doe", "12345678910")
         account2 = PersonalAccount("Jane", "Doe", "10987654321")
-        registry.add_account(account1)
-        registry.add_account(account2)
+        registry.accounts = [account1, account2]
         retrieved_account = registry.get_account_by_pesel("12345678910")
         assert retrieved_account == account1
 
@@ -37,11 +36,7 @@ class TestAccountRegistry:
         account3 = PersonalAccount("Jack", "Doe", "67891012345")
         account4 = PersonalAccount("Jade", "Doe", "54321109876")
         account5 = PersonalAccount("Jude", "Doe", "12345109876")
-        registry.add_account(account1)
-        registry.add_account(account2)
-        registry.add_account(account3)
-        registry.add_account(account4)
-        registry.add_account(account5)
+        registry.accounts = [account1, account2, account3, account4, account5]
         retrieved_accounts = registry.get_all_accounts()
         assert retrieved_accounts == [account1, account2, account3, account4, account5]
 
@@ -51,10 +46,58 @@ class TestAccountRegistry:
         account3 = PersonalAccount("Jack", "Doe", "67891012345")
         account4 = PersonalAccount("Jade", "Doe", "54321109876")
         account5 = PersonalAccount("Jude", "Doe", "12345109876")
-        registry.add_account(account1)
-        registry.add_account(account2)
-        registry.add_account(account3)
-        registry.add_account(account4)
-        registry.add_account(account5)
+        registry.accounts = [account1, account2, account3, account4, account5]
         number_of_accounts = registry.get_number_of_accounts()
         assert number_of_accounts == 5
+
+    def test_delete_account(self, registry):
+        account1 = PersonalAccount("John", "Doe", "12345678910")
+        account2 = PersonalAccount("Jane", "Doe", "10987654321")
+        account3 = PersonalAccount("Jack", "Doe", "67891012345")
+        account4 = PersonalAccount("Jade", "Doe", "54321109876")
+        account5 = PersonalAccount("Jude", "Doe", "12345109876")
+        registry.accounts = [account1, account2, account3, account4, account5]
+        registry.delete_account("12345678910")
+        number_of_accounts = len(registry.accounts)
+        assert number_of_accounts == 4
+        assert registry.accounts == [account2, account3, account4, account5]
+
+    def test_delete_account_not_existing(self, registry):
+        account1 = PersonalAccount("John", "Doe", "12345678910")
+        account2 = PersonalAccount("Jane", "Doe", "10987654321")
+        account3 = PersonalAccount("Jack", "Doe", "67891012345")
+        account4 = PersonalAccount("Jade", "Doe", "54321109876")
+        account5 = PersonalAccount("Jude", "Doe", "12345109876")
+        registry.accounts = [account1, account2, account3, account4, account5]
+        registry.delete_account("1029384756")
+        number_of_accounts = len(registry.accounts)
+        assert number_of_accounts == 5
+        assert registry.accounts == [account1, account2, account3, account4, account5]
+
+    def test_delete_account_last(self, registry):
+        account1 = PersonalAccount("John", "Doe", "12345678910")
+        registry.accounts = [account1]
+        registry.delete_account("12345678910")
+        number_of_accounts = len(registry.accounts)
+        assert number_of_accounts == 0
+        assert registry.accounts == []
+
+    def test_delete_account_with_no_accounts(self, registry):
+        registry.delete_account("12345678910")
+        number_of_accounts = len(registry.accounts)
+        assert number_of_accounts == 0
+        assert registry.accounts == []
+
+    def test_delete_account_multiple(self, registry):
+        account1 = PersonalAccount("John", "Doe", "12345678910")
+        account2 = PersonalAccount("Jane", "Doe", "10987654321")
+        account3 = PersonalAccount("Jack", "Doe", "67891012345")
+        account4 = PersonalAccount("Jade", "Doe", "54321109876")
+        account5 = PersonalAccount("Jude", "Doe", "12345109876")
+        registry.accounts = [account1, account2, account3, account4, account5]
+        registry.delete_account("12345678910")
+        registry.delete_account("67891012345")
+        registry.delete_account("12345109876")
+        number_of_accounts = len(registry.accounts)
+        assert number_of_accounts == 2
+        assert registry.accounts == [account2, account4]
